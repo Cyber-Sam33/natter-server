@@ -1,0 +1,171 @@
+#!/usr/bin/env node
+require("dotenv").config();
+const { Configuration, OpenAIApi } = require('openai');
+
+// Set up openai object for access to API
+const openai = new OpenAIApi(new Configuration({
+  apiKey: process.env.OPENAI_KEY
+}));
+
+//require the database to query
+const db = require("../configs/db.config");
+
+/**
+ * Module dependencies.
+ */
+
+var app = require("../app");
+var debug = require("debug")("server:server");
+var http = require("http");
+
+/**
+ * Get port from environment and store in Express.
+ */
+
+var port = normalizePort(process.env.PORT || "8080");
+app.set("port", port);
+
+/** 
+ * Create HTTP server.
+ */
+
+const server = http.createServer(app);
+const { Server } = require("socket.io");
+
+// Create new socket server
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:3000",
+    method: ["GET", "POST"],
+  },
+});
+
+const users = [];
+let disConName = "";
+const nameTracker = { test: "test" };
+
+io.sockets.on("connection", (socket) => {
+  console.log(`User ${socket.id} connected`);
+
+  // ChatGPT socket connection to receive prompt from user and return ChatGPT response
+  socket.on("send_chatgpt", payload => {
+
+    openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: payload.message }]
+    }).then((result) => {
+      socket.emit("receive_chatgpt", {
+        message: result.data.choices[0].message.content,
+        timestamp: payload.timestamp,
+        group: "AI",
+        sender: "AI Assistant",
+        group_id: 26
+      });
+    }).catch((error) => console.log("Error calling OpenAI API:", error));
+  });
+
+  socket.on("receive_name", (name) => {
+    console.log("Natter name: ", name);
+
+
+    if (!nameTracker[name]) {
+      nameTracker[name] = name;
+      console.log("NAME TRACKER--------!$^", nameTracker);
+      socket.join("Main");
+      socket.emit("set_user_name", name);
+      socket.broadcast.emit("NEW_USER_CONNECTED", name);
+      disConName = name;
+    } else {
+      socket.emit("enter_unique_name", "Name already in use. Please enter another name.");
+    }
+  });
+
+  socket.on("join", function(group) {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.leave(room);
+      }
+    }
+    socket.join(group);
+  });
+
+  socket.on("send_message", (payload) => {
+    db.query(
+      `INSERT INTO messages (sender, group_id, timestamp, message) VALUES ($1, $2, $3, $4) RETURNING *;`,
+      [payload.sender, payload.group_id, payload.timestamp, payload.message]
+    ).then((result) => {
+      console.log("results+++++++: ", result.rows);
+      socket.to(payload.group).emit("receive_message", result.rows[0]);
+    });
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`User ${socket.id} disconnected`);
+    delete nameTracker[disConName];
+  });
+});
+
+/**
+ * Listen on provided port, on all network interfaces.
+ */
+
+server.listen(port);
+server.on("error", onError);
+server.on("listening", onListening);
+
+/**
+ * Normalize a port into a number, string, or false.
+ */
+
+function normalizePort(val) {
+  var port = parseInt(val, 10);
+
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
+
+  if (port >= 0) {
+    // port number
+    return port;
+  }
+
+  return false;
+}
+
+/**
+ * Event listener for HTTP server "error" event.
+ */
+
+function onError(error) {
+  if (error.syscall !== "listen") {
+    throw error;
+  }
+
+  var bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case "EACCES":
+      console.error(bind + " requires elevated privileges");
+      process.exit(1);
+      break;
+    case "EADDRINUSE":
+      console.error(bind + " is already in use");
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  console.log(`Server listening on port ${port}`);
+  var addr = server.address();
+  var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
+  debug("Listening on " + bind);
+}
