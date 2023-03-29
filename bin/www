@@ -35,7 +35,7 @@ const { Server } = require("socket.io");
 // Create new socket server
 const io = new Server(server, {
   cors: {
-    origin: "https://64237c17666af50008e347ae--ornate-scone-630cb8.netlify.app/",
+    origin: "https://ornate-scone-630cb8.netlify.app",
     method: ["GET", "POST"],
   },
 });
