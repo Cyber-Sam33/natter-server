@@ -236,16 +236,16 @@ INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Isabella', 
 
 
 -- Group 18 
-INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Nathan', 18, '09:00', 'Who else misses the old Reddit layout? I feel like it was much simpler and easier to navigate.');
-INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Olivia', 18, '09:05', 'I agree, Nathan. The old layout had a certain charm to it that I really enjoyed.');
+INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Vasiliy', 18, '09:00', 'Who else misses the old Reddit layout? I feel like it was much simpler and easier to navigate.');
+INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Olivia', 18, '09:05', 'I agree, Vasiliy. The old layout had a certain charm to it that I really enjoyed.');
 INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Ethan', 18, '09:10', 'I actually prefer the new layout. It''s more modern and visually appealing, in my opinion.');
-INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Nathan', 18, '09:15', 'I can see why some people like the new layout, but I still prefer the old one. It felt more like a community to me.');
+INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Vasiliy', 18, '09:15', 'I can see why some people like the new layout, but I still prefer the old one. It felt more like a community to me.');
 INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Olivia', 18, '09:20', 'Yes, the old layout had a unique atmosphere. It made browsing through subreddits more interesting.');
 INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Ethan', 18, '09:25', 'Well, I guess we all have our preferences. There''s no denying that Reddit has come a long way, though.');
-INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Nathan', 18, '09:30', 'Definitely. Despite the changes, I still visit the site regularly for news and discussions.');
+INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Vasiliy', 18, '09:30', 'Definitely. Despite the changes, I still visit the site regularly for news and discussions.');
 INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Olivia', 18, '09:35', 'Same here. I appreciate how diverse and informative the content can be.');
 INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Ethan', 18, '09:40', 'No doubt about it. Reddit is still an essential source of information and entertainment for me.');
-INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Nathan', 18, '09:45', 'Agreed. Let''s hope it continues to evolve and improve in the future.');
+INSERT INTO messages (sender, group_id, timestamp, message) VALUES ('Vasiliy', 18, '09:45', 'Agreed. Let''s hope it continues to evolve and improve in the future.');
 
 
 
